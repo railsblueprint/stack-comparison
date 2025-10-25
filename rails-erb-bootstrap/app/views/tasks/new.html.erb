@@ -1,0 +1,19 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">New Task</h2>
+        </div>
+
+        <div class="card-body">
+          <%= render 'form', task: @task %>
+        </div>
+
+        <div class="card-footer bg-light">
+          <%= link_to 'Back to Tasks', tasks_path, class: 'btn btn-outline-secondary' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

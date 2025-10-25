@@ -1,0 +1,80 @@
+<%= form_with model: task, local: true do |f| %>
+  <%# Error messages %>
+  <% if task.errors.any? %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h5 class="alert-heading">
+        <%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:
+      </h5>
+      <ul class="mb-0">
+        <% task.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <%# Title field %>
+  <div class="mb-3">
+    <%= f.label :title, class: 'form-label' %>
+    <%= f.text_field :title, class: "form-control #{task.errors[:title].any? ? 'is-invalid' : ''}", placeholder: 'Enter task title', required: true %>
+    <% if task.errors[:title].any? %>
+      <div class="invalid-feedback">
+        <%= task.errors[:title].first %>
+      </div>
+    <% end %>
+    <div class="form-text">Enter a descriptive title for your task (3-100 characters)</div>
+  </div>
+
+  <%# Description field %>
+  <div class="mb-3">
+    <%= f.label :description, class: 'form-label' %>
+    <%= f.text_area :description, rows: 5, class: "form-control #{task.errors[:description].any? ? 'is-invalid' : ''}", placeholder: 'Enter task description (optional)' %>
+    <% if task.errors[:description].any? %>
+      <div class="invalid-feedback">
+        <%= task.errors[:description].first %>
+      </div>
+    <% end %>
+    <div class="form-text">Provide additional details about this task (max 1000 characters)</div>
+  </div>
+
+  <%# Status and Priority row %>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <%= f.label :status, class: 'form-label' %>
+      <%= f.select :status, Task.statuses.keys.map { |s| [s.titleize, s] }, {}, class: "form-select #{task.errors[:status].any? ? 'is-invalid' : ''}", required: true %>
+      <% if task.errors[:status].any? %>
+        <div class="invalid-feedback">
+          <%= task.errors[:status].first %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.label :priority, class: 'form-label' %>
+      <%= f.select :priority, Task.priorities.keys.map { |p| [p.titleize, p] }, {}, class: "form-select #{task.errors[:priority].any? ? 'is-invalid' : ''}", required: true %>
+      <% if task.errors[:priority].any? %>
+        <div class="invalid-feedback">
+          <%= task.errors[:priority].first %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Due date field %>
+  <div class="mb-3">
+    <%= f.label :due_date, class: 'form-label' %>
+    <%= f.date_field :due_date, class: "form-control #{task.errors[:due_date].any? ? 'is-invalid' : ''}", min: Date.today, required: true %>
+    <% if task.errors[:due_date].any? %>
+      <div class="invalid-feedback">
+        <%= task.errors[:due_date].first %>
+      </div>
+    <% end %>
+    <div class="form-text">Select when this task should be completed</div>
+  </div>
+
+  <%# Submit button %>
+  <div class="d-grid gap-2">
+    <%= f.submit task.new_record? ? 'Create Task' : 'Update Task', class: 'btn btn-primary btn-lg' %>
+  </div>
+<% end %>

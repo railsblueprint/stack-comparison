@@ -1,0 +1,58 @@
+= form_with model: task, local: true do |f|
+  / Error messages
+  - if task.errors.any?
+    .alert.alert-danger.alert-dismissible.fade.show role="alert"
+      h5.alert-heading
+        = pluralize(task.errors.count, "error")
+        |  prohibited this task from being saved:
+      ul.mb-0
+        - task.errors.full_messages.each do |message|
+          li = message
+      button.btn-close type="button" data-bs-dismiss="alert" aria-label="Close"
+
+  / Title field
+  .mb-3
+    = f.label :title, class: 'form-label'
+    = f.text_field :title, class: "form-control #{task.errors[:title].any? ? 'is-invalid' : ''}", placeholder: 'Enter task title', required: true
+    - if task.errors[:title].any?
+      .invalid-feedback
+        = task.errors[:title].first
+    .form-text Enter a descriptive title for your task (3-100 characters)
+
+  / Description field
+  .mb-3
+    = f.label :description, class: 'form-label'
+    = f.text_area :description, rows: 5, class: "form-control #{task.errors[:description].any? ? 'is-invalid' : ''}", placeholder: 'Enter task description (optional)'
+    - if task.errors[:description].any?
+      .invalid-feedback
+        = task.errors[:description].first
+    .form-text Provide additional details about this task (max 1000 characters)
+
+  / Status and Priority row
+  .row.mb-3
+    .col-md-6
+      = f.label :status, class: 'form-label'
+      = f.select :status, Task.statuses.keys.map { |s| [s.titleize, s] }, {}, class: "form-select #{task.errors[:status].any? ? 'is-invalid' : ''}", required: true
+      - if task.errors[:status].any?
+        .invalid-feedback
+          = task.errors[:status].first
+
+    .col-md-6
+      = f.label :priority, class: 'form-label'
+      = f.select :priority, Task.priorities.keys.map { |p| [p.titleize, p] }, {}, class: "form-select #{task.errors[:priority].any? ? 'is-invalid' : ''}", required: true
+      - if task.errors[:priority].any?
+        .invalid-feedback
+          = task.errors[:priority].first
+
+  / Due date field
+  .mb-3
+    = f.label :due_date, class: 'form-label'
+    = f.date_field :due_date, class: "form-control #{task.errors[:due_date].any? ? 'is-invalid' : ''}", min: Date.today, required: true
+    - if task.errors[:due_date].any?
+      .invalid-feedback
+        = task.errors[:due_date].first
+    .form-text Select when this task should be completed
+
+  / Submit button
+  .d-grid.gap-2
+    = f.submit task.new_record? ? 'Create Task' : 'Update Task', class: 'btn btn-primary btn-lg'

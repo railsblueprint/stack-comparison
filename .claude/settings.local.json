@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(done)",
+      "Bash(for dir in rails-slim-bootstrap rails-slim-tailwind rails-erb-bootstrap rails-erb-tailwind react-ts-tailwind)",
+      "Bash(for dir in react-js-styled-comp react-js-bootstrap)",
+      "Bash(do echo \"=== $dir ===\")",
+      "Bash(ls:*)",
+      "Bash(for dir in rails-slim-bootstrap rails-slim-tailwind rails-erb-bootstrap rails-erb-tailwind)",
+      "Bash(for dir in react-ts-tailwind react-ts-styled-comp react-ts-bootstrap)",
+      "Bash(for dir in react-js-tailwind react-js-styled-comp react-js-bootstrap)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

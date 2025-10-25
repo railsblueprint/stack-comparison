@@ -1,0 +1,90 @@
+.container.mt-4
+  .row
+    .col-12
+      .d-flex.justify-content-between.align-items-center.mb-4
+        h1.display-4 Tasks
+        = link_to 'New Task', new_task_path, class: 'btn btn-primary btn-lg'
+
+      / Flash messages
+      - if notice
+        .alert.alert-success.alert-dismissible.fade.show role="alert"
+          = notice
+          button.btn-close type="button" data-bs-dismiss="alert" aria-label="Close"
+
+      / Stats cards
+      .row.mb-4
+        .col-md-3
+          .card.bg-light
+            .card-body
+              h5.card-title Total Tasks
+              p.card-text.display-6 = @total_count
+        .col-md-3
+          .card.border-secondary
+            .card-body
+              h5.card-title Todo
+              p.card-text.display-6 = @todo_count
+        .col-md-3
+          .card.border-warning
+            .card-body
+              h5.card-title In Progress
+              p.card-text.display-6 = @in_progress_count
+        .col-md-3
+          .card.border-success
+            .card-body
+              h5.card-title Done
+              p.card-text.display-6 = @done_count
+
+      / Filters
+      .card.mb-4
+        .card-body
+          = form_with url: tasks_path, method: :get, local: true, class: 'row g-3' do |f|
+            .col-md-4
+              = label_tag :status, 'Filter by Status', class: 'form-label'
+              = select_tag :status, options_for_select([['All', ''], ['Todo', 'todo'], ['In Progress', 'in_progress'], ['Done', 'done']], params[:status]), class: 'form-select'
+            .col-md-4
+              = label_tag :priority, 'Filter by Priority', class: 'form-label'
+              = select_tag :priority, options_for_select([['All', ''], ['Low', 'low'], ['Medium', 'medium'], ['High', 'high']], params[:priority]), class: 'form-select'
+            .col-md-4.d-flex.align-items-end
+              = submit_tag 'Filter', class: 'btn btn-secondary me-2'
+              = link_to 'Clear', tasks_path, class: 'btn btn-outline-secondary'
+
+      / Tasks list
+      - if @tasks.any?
+        .row
+          - @tasks.each do |task|
+            .col-md-6.mb-4
+              .card.h-100
+                .card-body
+                  .d-flex.justify-content-between.align-items-start.mb-3
+                    h5.card-title = link_to task.title, task_path(task), class: 'text-decoration-none'
+                    .d-flex.gap-2
+                      - case task.status
+                      - when 'done'
+                        span.badge.bg-success = task.status.titleize
+                      - when 'in_progress'
+                        span.badge.bg-warning.text-dark = task.status.titleize
+                      - else
+                        span.badge.bg-secondary = task.status.titleize
+
+                      - case task.priority
+                      - when 'high'
+                        span.badge.bg-danger = task.priority.titleize
+                      - when 'medium'
+                        span.badge.bg-info.text-dark = task.priority.titleize
+                      - else
+                        span.badge.bg-light.text-dark = task.priority.titleize
+
+                  p.card-text = truncate(task.description, length: 100)
+
+                  .d-flex.justify-content-between.align-items-center
+                    small.text-muted
+                      | Due:
+                      = task.due_date.strftime('%B %d, %Y')
+                    .btn-group role="group"
+                      = link_to 'View', task_path(task), class: 'btn btn-sm btn-outline-primary'
+                      = link_to 'Edit', edit_task_path(task), class: 'btn btn-sm btn-outline-secondary'
+                      = link_to 'Delete', task_path(task), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-outline-danger'
+      - else
+        .alert.alert-info
+          p.mb-0 No tasks found.
+            = link_to 'Create your first task', new_task_path, class: 'alert-link'

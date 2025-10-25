@@ -1,0 +1,71 @@
+.container.mt-4
+  .row
+    .col-lg-8.mx-auto
+      / Flash messages
+      - if notice
+        .alert.alert-success.alert-dismissible.fade.show role="alert"
+          = notice
+          button.btn-close type="button" data-bs-dismiss="alert" aria-label="Close"
+
+      .card.shadow-sm
+        .card-header.bg-primary.text-white
+          .d-flex.justify-content-between.align-items-center
+            h2.mb-0 = @task.title
+            .d-flex.gap-2
+              - case @task.status
+              - when 'done'
+                span.badge.bg-success.fs-6 = @task.status.titleize
+              - when 'in_progress'
+                span.badge.bg-warning.text-dark.fs-6 = @task.status.titleize
+              - else
+                span.badge.bg-light.text-dark.fs-6 = @task.status.titleize
+
+        .card-body
+          .row.mb-4
+            .col-md-6
+              h5.text-muted Priority
+              - case @task.priority
+              - when 'high'
+                span.badge.bg-danger.fs-5 = @task.priority.titleize
+              - when 'medium'
+                span.badge.bg-info.text-dark.fs-5 = @task.priority.titleize
+              - else
+                span.badge.bg-light.text-dark.fs-5 = @task.priority.titleize
+
+            .col-md-6
+              h5.text-muted Due Date
+              p.fs-5.mb-0
+                i.bi.bi-calendar-event
+                = @task.due_date.strftime('%B %d, %Y')
+                - if @task.due_date < Date.today && @task.status != 'done'
+                  span.badge.bg-danger.ms-2 Overdue
+                - elsif @task.due_date == Date.today && @task.status != 'done'
+                  span.badge.bg-warning.text-dark.ms-2 Due Today
+
+          hr
+
+          .mb-4
+            h5.text-muted Description
+            - if @task.description.present?
+              p.lead = @task.description
+            - else
+              p.text-muted.fst-italic No description provided
+
+          hr
+
+          .row.mb-3
+            .col-md-6
+              small.text-muted
+                strong Created:
+                = @task.created_at.strftime('%B %d, %Y at %I:%M %p')
+            .col-md-6
+              small.text-muted
+                strong Last Updated:
+                = @task.updated_at.strftime('%B %d, %Y at %I:%M %p')
+
+        .card-footer.bg-light
+          .d-flex.justify-content-between
+            = link_to 'Back to Tasks', tasks_path, class: 'btn btn-outline-secondary'
+            .btn-group
+              = link_to 'Edit Task', edit_task_path(@task), class: 'btn btn-primary'
+              = link_to 'Delete Task', task_path(@task), method: :delete, data: { confirm: 'Are you sure you want to delete this task?' }, class: 'btn btn-danger'
